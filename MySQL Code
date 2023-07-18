@@ -1,1 +1,17 @@
+CREATE TABLE Invoice (
+    invoice_ID INT AUTO_INCREMENT PRIMARY KEY
+);
+
+CREATE TABLE Insurance_Pay_For (
+    invoice_ID INT,
+    Provider VARCHAR(255),
+    FOREIGN KEY (invoice_ID) REFERENCES Invoice(invoice_ID),
+    FOREIGN KEY (Provider) REFERENCES Insurance(Provider)
+);
+
+CREATE TABLE Insurance (
+    Provider VARCHAR(255) PRIMARY KEY,
+    Deductible DECIMAL(10, 2),
+    Co_pay DECIMAL(10, 2)
+);
 
