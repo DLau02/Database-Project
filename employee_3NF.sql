@@ -2,7 +2,8 @@ CREATE TABLE employee (
   SSN INT(9) NOT NULL,
   Specialty VARCHAR(50) NOT NULL UNIQUE,
   Super_SSN INT(9) NOT NULL UNIQUE,
-  PRIMARY KEY (SSN)
+  PRIMARY KEY (SSN),
+  FOREIGN KEY (SSN) REFERENCES person(SSN)
 );
 
 Create Table Specialty_Salary (
