@@ -1,9 +1,9 @@
 CREATE TABLE Invoice (
-    invoice_ID INT AUTO_INCREMENT PRIMARY KEY
+    invoice_ID VARCHAR(8) AUTO_INCREMENT PRIMARY KEY
 );
 
 CREATE TABLE Insurance_Pay_For (
-    invoice_ID INT,
+    invoice_ID VARCHAR(8),
     Provider VARCHAR(255),
     FOREIGN KEY (invoice_ID) REFERENCES Invoice(invoice_ID),
     FOREIGN KEY (Provider) REFERENCES Insurance(Provider)
