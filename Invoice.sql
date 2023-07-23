@@ -1,0 +1,3 @@
+CREATE TABLE Invoice (
+    invoice_ID VARCHAR(8) AUTO_INCREMENT PRIMARY KEY
+);
