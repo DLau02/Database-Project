@@ -1,4 +1,4 @@
--- Get Address, Name, and Birthdate from an employee using SSN
+-- Get Address, Name, and Birthdate from a person using SSN
 Select Address, First_Name, Last_Name, Birthdate
 From person
 Where SSN = '&SSN';
