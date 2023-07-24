@@ -1,0 +1,40 @@
+-- Get Address, Name, and Birthdate from an employee using SSN
+Select Address, First_Name, Last_Name, Birthdate
+From person
+Where SSN = '&SSN';
+
+
+-- Get a List of all the equipment and its price
+Select * 
+From Supplies;
+
+
+-- Get all information about a medication
+Select *
+From Medication
+Where Med_Name = '&Med_Name' AND Supply_Code = '&Supply_Code';
+
+
+-- Get all information about a peice of equipment
+Select *
+From Equipment
+Where Eqmt_Name = '&Eqmt_Name' AND Supply_Code = '&Supply_Code';
+
+
+-- Get a list of accepted insurances and their details
+Select *
+From Insurance;
+
+
+-- Get the appointment time and type for a patient
+Select Duration, Visit_Type
+from Doctor_Visits
+where Invoice_ID = '&Invoice_ID'
+
+
+-- Find the location of Patient
+Select Room_number
+From Patient, Doctor_Visits
+Where Patient_SSN = SSN and Invoice_ID = '&INvoice_ID';
+
+
