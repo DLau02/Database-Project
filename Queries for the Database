@@ -38,3 +38,7 @@ From Patient, Doctor_Visits
 Where Patient_SSN = SSN and Invoice_ID = '&INvoice_ID';
 
 
+-- equipment, specialist, and room_type used for a certain procedure
+Select Eqmt_Name, Specialty, Room_Type
+From Procedure_Requires as PR, Equipment as E, Procedure_Info as P
+where PR.supply_code = E.supply_code and P.PID = PR.PID;
