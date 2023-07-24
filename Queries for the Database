@@ -42,3 +42,23 @@ Where Patient_SSN = SSN and Invoice_ID = '&INvoice_ID';
 Select Eqmt_Name, Specialty, Room_Type
 From Procedure_Requires as PR, Equipment as E, Procedure_Info as P
 where PR.supply_code = E.supply_code and P.PID = PR.PID;
+
+-- view of employees names and ssn with their supervisor's ssn
+create view employeeSupervisors
+as
+select first_name, last_name, e.ssn, d.department, super_ssn from employee as e join department_supervisor as d on d.department=e.department join person as p on e.ssn=p.ssn;
+
+-- view of all information about the supplies a procedure will need
+create view procedureSuppliesInfo
+as
+select c.pid,s.supply_code,r.time_held,r.quantitiy,s.supp_name,s.price from procedure_contains as c join procedure_requires as r on r.pid=c.pid  join supplies as s on r.supply_code=s.supply_code;
+
+-- view of procedure, invoice, and insurance information
+create view procedureInvoiceInfo
+as
+select p.invoice_id,p.provider,c.pid, i.specialty,i.room_type  from insurance_pay_for as p join invoice_contains as c on p.invoice_id=c.invoice_id join procedure_info as i on i.pid=c.pid;
+
+-- view of all information on medications
+create view allMedicationInfo
+as
+select m.med_name, s.supply_code, m.expiration,m.dose,m.form,s.price from medication as m join supplies as s on m.supply_code=s.supply_code
