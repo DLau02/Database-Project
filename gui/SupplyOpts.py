@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from dbConfig import db
+from dbConfig import db, cursor
 
 class SupplyOpts(ctk.CTkFrame):
     def __init__(self, parent, controller):
@@ -41,7 +41,7 @@ class AddMedication(ctk.CTkFrame):
         form = ctk.CTkEntry(self, placeholder_text="form", width=200)
         price = ctk.CTkEntry(self, placeholder_text="price", width=200)
         submit = ctk.CTkButton(
-            self, text="Submit", command=lambda: self.add(name.get(), code.get(), expiration.get(), dose.get(), form.get(), float(price.get())),
+            self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), expiration.get(), dose.get(), form.get(), float(price.get())),
         )
         back = ctk.CTkButton(
             self, text="Back", command=lambda: self.goto_patient_opts()
@@ -62,22 +62,47 @@ class AddMedication(ctk.CTkFrame):
         for element in elements:
             element.pack()
 
-    def add(self, name: str, code: str, expiration: str, dose: str, form: str, price: float):
-        mycursor = db.cursor()
+    # def add(self, name: str, code: str, expiration: str, dose: str, form: str, price: float):
+    #     mycursor = db.cursor()
         
-        supplySql = "INSERT INTO supplies VALUES (%s, %s, %s)"
-        supplyVal = (name, code, price)
-        try:
-            mycursor.execute(supplySql, supplyVal)
-        except Exception as e:
-            print(e)
+    #     supplySql = "INSERT INTO supplies VALUES (%s, %s, %s)"
+    #     supplyVal = (name, code, price)
+    #     try:
+    #         mycursor.execute(supplySql, supplyVal)
+    #     except Exception as e:
+    #         print(e)
         
-        medicationSql = "INSERT INTO medication VALUES (%s, %s, STR_TO_DATE('01-22-1905','%m-%d-%Y'), %s, %s)"
-        medicationVal = (name, code, dose, form)
-        try:
-            mycursor.execute(medicationSql, medicationVal)
-        except Exception as e:
-            print(e)
+    #     medicationSql = "INSERT INTO medication VALUES (%s, %s, STR_TO_DATE('01-22-1905','%m-%d-%Y'), %s, %s)"
+    #     medicationVal = (name, code, dose, form)
+    #     try:
+    #         mycursor.execute(medicationSql, medicationVal)
+    #     except Exception as e:
+    #         print(e)
 
+    #     db.commit()
+
+def addSupplyToDatabase(name: str, code: str, price: float):
+    
+    supplySql = "INSERT INTO supplies VALUES (%s, %s, %s)"
+    supplyVal = (name, code, price)
+    try:
+        cursor.execute(supplySql, supplyVal)
         db.commit()
+    except Exception as e:
+        print(e)
 
+def addMedicationToDatabase(name: str, code: str, expiration: str, dose: str, form: str, price: float):
+
+    addSupplyToDatabase(name, code, price)
+
+    medicationSql = "INSERT INTO medication VALUES (%s, %s, STR_TO_DATE('01-22-1905','%m-%d-%Y'), %s, %s)"
+    medicationVal = (name, code, dose, form)
+    try:
+        cursor.execute(medicationSql, medicationVal)
+        db.commit()
+    except Exception as e:
+        print(e)
+
+def addEquipmentToDatabase(name: str, code: str, price: float):
+    
+    addSupplyToDatabase(name, code, price)
