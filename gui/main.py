@@ -1,7 +1,8 @@
 import sys
 import customtkinter as ctk
 import mysql.connector
-from PatientOpts import PatientByName, PatientOpts
+from PatientOpts import PatientByName, PatientOpts, AddPatient
+from SupplyOpts import SupplyOpts, AddMedication
 
 from dbConfig import db
 
@@ -23,7 +24,7 @@ class App(ctk.CTk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, PatientOpts, PatientByName):
+        for F in (StartPage, PatientOpts, AddPatient, PatientByName, SupplyOpts, AddMedication):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
             self.frames[page_name] = frame
@@ -52,10 +53,16 @@ class StartPage(ctk.CTkFrame):
             text="Patient",
             command=lambda: controller.show_frame("PatientOpts"),
         )
+        SupplyOpts = ctk.CTkButton(
+            self,
+            text="Supplies", 
+            command=lambda: controller.show_frame("SupplyOpts"),
+        )
         exit_btn = ctk.CTkButton(self, text="Exit", command=lambda: sys.exit(0))
 
         label.pack(side="top", fill="x", pady=10)
         patient_by_name.pack()
+        SupplyOpts.pack()
         exit_btn.pack()
 
 

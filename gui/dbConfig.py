@@ -7,3 +7,5 @@ db = mysql.connector.connect(
     port=3306,
     database="new_schema1",
 )
+
+cursor = db.cursor()
