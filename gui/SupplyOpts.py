@@ -14,6 +14,11 @@ class SupplyOpts(ctk.CTkFrame):
             text="Add medication",
             command=lambda: controller.show_frame("AddMedication")
         )
+        search_medication = ctk.CTkButton(
+            self,
+            text="Search medication",
+            command=lambda: controller.show_frame("SearchMedication")
+        )
         add_equipment = ctk.CTkButton(
             self,  
             text="Add equipment",
@@ -28,6 +33,7 @@ class SupplyOpts(ctk.CTkFrame):
         # render all elements 
         label.pack(side="top", fill="x", pady=10)
         add_medication.pack()
+        search_medication.pack()
         add_equipment.pack()
         back.pack()
 
@@ -67,6 +73,50 @@ class AddMedication(ctk.CTkFrame):
             entry.delete(0, ctk.END)
 
         self.controller.show_frame("SupplyOpts")
+
+class SearchMedication(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+
+        ctk.CTkFrame.__init__(self, parent)
+        self.controller = controller
+
+        # elements to be rendered
+        label = ctk.CTkLabel(self, text="Enter medication information", width=200)
+        self.results_box=ctk.CTkTextbox(self, width=500)
+        name = ctk.CTkEntry(self, placeholder_text="name", width=200)
+        code = ctk.CTkEntry(self, placeholder_text="code", width=200)
+        submit = ctk.CTkButton(
+            self, text="Search", command=lambda: self.searchDatabaseForMedication(name.get(), code.get()),
+        )
+        back = ctk.CTkButton(
+            self, text="Back", command=lambda: self.goto_supply_opts()
+        )  
+
+        self.entries = [name, code]
+        self.elements = [label, self.results_box] + self.entries + [submit, back]
+
+        # render all elements 
+        for element in self.elements:
+            element.pack()
+
+    def searchDatabaseForMedication(self, name: str, code: str):
+    
+        querySql = "Select * From Medication Where Med_Name = %s OR Supply_Code = %s;"
+        queryVal = (name, code)
+        
+        try:
+            cursor.execute(querySql, queryVal)
+            medications = cursor.fetchall()
+            label_text = "There are {} medications matching name: {}, code: {}\n".format(len(medications), name, code)
+            for medication in medications:
+                label_text += "Name: {} \nCode: {}\nExpiration: {}\nDose: {}\nForm: {}\n\n".format(medication[0], medication[1], medication[2], medication[3], medication[4])
+            self.results_box.configure(state=ctk.NORMAL)
+            self.results_box.delete("0.0", "end")
+            self.results_box.insert("0.0", label_text)
+            self.results_box.configure(state=ctk.DISABLED)    
+        except Exception as e:
+            print(e)
+        
 
 class AddEquipment(ctk.CTkFrame):
     def __init__(self, parent, controller):
