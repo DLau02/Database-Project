@@ -3,8 +3,11 @@ from dbConfig import db, cursor
 
 class SupplyOpts(ctk.CTkFrame):
     def __init__(self, parent, controller):
+
         ctk.CTkFrame.__init__(self, parent)
         self.controller = controller
+
+        # elements to be rendered
         label = ctk.CTkLabel(self, text="Select an option")
         add_medication = ctk.CTkButton(
             self, 
@@ -22,6 +25,7 @@ class SupplyOpts(ctk.CTkFrame):
             command=lambda: controller.show_frame("StartPage"),
         )
 
+        # render all elements 
         label.pack(side="top", fill="x", pady=10)
         add_medication.pack()
         add_equipment.pack()
@@ -29,10 +33,12 @@ class SupplyOpts(ctk.CTkFrame):
 
 class AddMedication(ctk.CTkFrame):
     def __init__(self, parent, controller):
+
         ctk.CTkFrame.__init__(self, parent)
         self.controller = controller
+
+        # elements to be rendered
         label = ctk.CTkLabel(self, text="Enter medication information", width=200)
-        label.pack()
         name = ctk.CTkEntry(self, placeholder_text="name", width=200)
         code = ctk.CTkEntry(self, placeholder_text="code", width=200)
         expiration = ctk.CTkEntry(
@@ -48,9 +54,11 @@ class AddMedication(ctk.CTkFrame):
             self, text="Back", command=lambda: self.goto_supply_opts()
         )        
 
+        # order the elements
         self.entries = [name, code, expiration, dose, form, price]
         self.elements = [label] + self.entries + [submit, back]
 
+        # render all elements 
         for element in self.elements:
             element.pack()
 
@@ -64,8 +72,9 @@ class AddEquipment(ctk.CTkFrame):
     def __init__(self, parent, controller):
         ctk.CTkFrame.__init__(self, parent)
         self.controller = controller
+
+        # elements to be rendered
         label = ctk.CTkLabel(self, text="Enter equipment information", width=200)  
-        label.pack()   
         name = ctk.CTkEntry(self, placeholder_text="name", width=200)
         code = ctk.CTkEntry(self, placeholder_text="code", width=200)  
         lifetime = ctk.CTkEntry(self, placeholder_text="lifetime", width=200)
@@ -73,15 +82,17 @@ class AddEquipment(ctk.CTkFrame):
         type = ctk.CTkEntry(self, placeholder_text="type", width=200)
         price = ctk.CTkEntry(self, placeholder_text="price", width=200)
         submit = ctk.CTkButton(
-            self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), lifetime.get(), hours.get(), type.get(), float(price.get())),
+            self, text="Submit", command=lambda: addEquipmentToDatabase(name.get(), code.get(), lifetime.get(), hours.get(), type.get(), float(price.get())),
         )
         back = ctk.CTkButton(
             self, text="Back", command=lambda: self.goto_supply_opts()
         )
 
+        # order the elements
         self.entries = [name, code, lifetime, hours, type, price]
         self.elements = [label] + self.entries + [submit, back]
-
+        
+        # render all elements 
         for element in self.elements:
             element.pack()
 
