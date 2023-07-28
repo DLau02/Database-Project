@@ -14,7 +14,7 @@ class SupplyOpts(ctk.CTkFrame):
         add_equipment = ctk.CTkButton(
             self,  
             text="Add equipment",
-            command=lambda: controller.show_frame("Add equipment"),
+            command=lambda: controller.show_frame("AddEquipment"),
         )
         back = ctk.CTkButton(
             self,
@@ -32,6 +32,7 @@ class AddMedication(ctk.CTkFrame):
         ctk.CTkFrame.__init__(self, parent)
         self.controller = controller
         label = ctk.CTkLabel(self, text="Enter medication information", width=200)
+        label.pack()
         name = ctk.CTkEntry(self, placeholder_text="name", width=200)
         code = ctk.CTkEntry(self, placeholder_text="code", width=200)
         expiration = ctk.CTkEntry(
@@ -44,42 +45,51 @@ class AddMedication(ctk.CTkFrame):
             self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), expiration.get(), dose.get(), form.get(), float(price.get())),
         )
         back = ctk.CTkButton(
-            self, text="Back", command=lambda: self.goto_patient_opts()
-        )
+            self, text="Back", command=lambda: self.goto_supply_opts()
+        )        
 
-        elements = [
-            label,
-            name,
-            code,
-            expiration,
-            dose,
-            form,
-            price,
-            submit,
-            back,
-        ]
+        self.entries = [name, code, expiration, dose, form, price]
+        self.elements = [label] + self.entries + [submit, back]
 
-        for element in elements:
+        for element in self.elements:
             element.pack()
 
-    # def add(self, name: str, code: str, expiration: str, dose: str, form: str, price: float):
-    #     mycursor = db.cursor()
-        
-    #     supplySql = "INSERT INTO supplies VALUES (%s, %s, %s)"
-    #     supplyVal = (name, code, price)
-    #     try:
-    #         mycursor.execute(supplySql, supplyVal)
-    #     except Exception as e:
-    #         print(e)
-        
-    #     medicationSql = "INSERT INTO medication VALUES (%s, %s, STR_TO_DATE('01-22-1905','%m-%d-%Y'), %s, %s)"
-    #     medicationVal = (name, code, dose, form)
-    #     try:
-    #         mycursor.execute(medicationSql, medicationVal)
-    #     except Exception as e:
-    #         print(e)
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
 
-    #     db.commit()
+        self.controller.show_frame("SupplyOpts")
+
+class AddEquipment(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        ctk.CTkFrame.__init__(self, parent)
+        self.controller = controller
+        label = ctk.CTkLabel(self, text="Enter equipment information", width=200)  
+        label.pack()   
+        name = ctk.CTkEntry(self, placeholder_text="name", width=200)
+        code = ctk.CTkEntry(self, placeholder_text="code", width=200)  
+        lifetime = ctk.CTkEntry(self, placeholder_text="lifetime", width=200)
+        hours = ctk.CTkEntry(self, placeholder_text="hours", width=200)
+        type = ctk.CTkEntry(self, placeholder_text="type", width=200)
+        price = ctk.CTkEntry(self, placeholder_text="price", width=200)
+        submit = ctk.CTkButton(
+            self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), lifetime.get(), hours.get(), type.get(), float(price.get())),
+        )
+        back = ctk.CTkButton(
+            self, text="Back", command=lambda: self.goto_supply_opts()
+        )
+
+        self.entries = [name, code, lifetime, hours, type, price]
+        self.elements = [label] + self.entries + [submit, back]
+
+        for element in self.elements:
+            element.pack()
+
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+
+        self.controller.show_frame("SupplyOpts")
 
 def addSupplyToDatabase(name: str, code: str, price: float):
     
@@ -103,6 +113,14 @@ def addMedicationToDatabase(name: str, code: str, expiration: str, dose: str, fo
     except Exception as e:
         print(e)
 
-def addEquipmentToDatabase(name: str, code: str, price: float):
+def addEquipmentToDatabase(name: str, code: str, lifetime: str, hours: str, type: str, price: float):
     
     addSupplyToDatabase(name, code, price)
+
+    equipmentSql = "INSERT INTO equipment VALUES (%s, %s, %s, %s, %s)"
+    equipmentVal = (name, code, lifetime, hours, type)
+    try:
+        cursor.execute(equipmentSql, equipmentVal)
+        db.commit()
+    except Exception as e:
+        print(e)
