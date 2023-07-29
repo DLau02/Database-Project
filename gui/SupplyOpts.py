@@ -24,6 +24,16 @@ class SupplyOpts(ctk.CTkFrame):
             text="Add equipment",
             command=lambda: controller.show_frame("AddEquipment"),
         )
+        search_equipment = ctk.CTkButton(
+            self,
+            text="Search equipment",
+            command=lambda: controller.show_frame("SearchEquipment")
+        )
+        equipment_for_procedure = ctk.CTkButton(
+            self,
+            text="supplies for  procedure",
+            command=lambda: controller.show_frame("SuppliesforProcedure")
+        )
         back = ctk.CTkButton(
             self,
             text="Back",
@@ -35,6 +45,8 @@ class SupplyOpts(ctk.CTkFrame):
         add_medication.pack()
         search_medication.pack()
         add_equipment.pack()
+        search_equipment.pack()
+        equipment_for_procedure.pack()
         back.pack()
 
 class AddMedication(ctk.CTkFrame):
@@ -116,8 +128,13 @@ class SearchMedication(ctk.CTkFrame):
             self.results_box.configure(state=ctk.DISABLED)    
         except Exception as e:
             print(e)
-        
 
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+
+        self.controller.show_frame("SupplyOpts")
+        
 class AddEquipment(ctk.CTkFrame):
     def __init__(self, parent, controller):
         ctk.CTkFrame.__init__(self, parent)
@@ -145,6 +162,126 @@ class AddEquipment(ctk.CTkFrame):
         # render all elements 
         for element in self.elements:
             element.pack()
+
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+
+        self.controller.show_frame("SupplyOpts")
+
+class SearchEquipment(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+
+        ctk.CTkFrame.__init__(self, parent)
+        self.controller = controller
+
+        # elements to be rendered
+        label = ctk.CTkLabel(self, text="Enter medication information", width=200)
+        name = ctk.CTkEntry(self, placeholder_text="name", width=200)
+        code = ctk.CTkEntry(self, placeholder_text="code", width=200)
+        self.results_box=ctk.CTkTextbox(self, width=500)
+        
+        submit = ctk.CTkButton(
+            self, text="Search", command=lambda: self.searchDatabaseForEquipment(name.get(), code.get()),
+        )
+        back = ctk.CTkButton(
+            self, text="Back", command=lambda: self.goto_supply_opts()
+        )
+
+        self.entries = [name, code]
+        self.elements = [label, self.results_box] + self.entries + [submit, back]
+
+        # render all elements 
+        for element in self.elements:
+            element.pack()
+
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+
+        self.controller.show_frame("SupplyOpts")
+
+    def searchDatabaseForEquipment(self, name: str, code: str):
+    
+        querySql = "Select * From Equipment Where Eqmt_Name = %s OR Supply_Code = %s;" 
+        queryVal = (name, code)
+
+        try:
+            cursor.execute(querySql, queryVal)
+            medications = cursor.fetchall()
+            label_text = "There are {} equipment pieces matching name: {}, code: {}\n".format(len(medications), name, code)
+            for piece in equipment:
+                label_text += "Name: {}\nCode: {}\nLifetime: {}\nHours: {}\nType: {}".format(medication[0], medication[1], medication[2], medication[3], medication[4])
+            self.results_box.configure(state=ctk.NORMAL)
+            self.results_box.delete("0.0", "end")
+            self.results_box.insert("0.0", label_text)
+            self.results_box.configure(state=ctk.DISABLED)    
+        except Exception as e:
+            print(e)
+
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+
+        self.controller.show_frame("SupplyOpts")
+
+class SuppliesforProcedure(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+
+        ctk.CTkFrame.__init__(self, parent)
+        self.controller = controller
+
+        # elements to be rendered
+        label = ctk.CTkLabel(self, text="Enter procedure ID", width=200)
+        med = ctk.CTkLabel(self, text="Medications required", width=200)
+        equip = ctk.CTkLabel(self, text="prescriptions required", width=200)
+        self.medication_results_box=ctk.CTkTextbox(self, width=500)
+        self.equipment_results_box=ctk.CTkTextbox(self, width=500)
+        code = ctk.CTkEntry(self, placeholder_text="procedure ID", width=200)
+        submit = ctk.CTkButton(
+            self, text="Search", command=lambda: self.getSuppliesForProcedure(code.get()),
+        )
+        back = ctk.CTkButton(
+            self, text="Back", command=lambda: self.goto_supply_opts()
+        )
+
+        self.entries = [code]
+        self.elements = [label] + self.entries + [submit, med, self.medication_results_box, equip, self.equipment_results_box, back]
+
+        # render all elements 
+        for element in self.elements:
+            element.pack()
+
+    def getSuppliesForProcedure(self, pid):
+        
+        medicationQuerySql = "Select * From procedure_requires JOIN medication ON PID = {};".format(pid)
+
+        equipmentQuerySql = "Select * From procedure_requires JOIN equipmennt ON PID = {};".format(pid)
+        
+        medication_text = ""
+        equipment_text = ""
+
+        try:
+            cursor.execute(medicationQuerySql)
+            medications = cursor.fetchall()
+            for medication in medications:
+                medication_text += "Name: {} \nCode: {}\nExpiration: {}\nDose: {}\nForm: {}\n\n".format(medication[0], medication[1], medication[2], medication[3], medication[4])
+            self.medication_results_box.configure(state=ctk.NORMAL)
+            self.medication_results_box.delete("0.0", "end")
+            self.medication_results_box.insert("0.0", medication_text)
+            self.medication_results_box.configure(state=ctk.DISABLED)  
+
+            cursor.execute(equipmentQuerySql)
+            equipment = cursor.fetchall()
+            for piece in equipment:
+                equipment_text += "Name: {}\nCode: {}\nLifetime: {}\nHours: {}\nType: {}".format(equipment[0], equipment[1], equipment[2], equipment[3], equipment[4])
+            self.equipment_results_box.configure(state=ctk.NORMAL)
+            self.equipment_results_box.delete("0.0", "end")
+            self.equipment_results_box.insert("0.0", equipment_text)
+            self.equipment_results_box.configure(state=ctk.DISABLED)  
+
+        except Exception as e:
+            print(e)
 
     def goto_supply_opts(self):
         for entry in self.entries:
