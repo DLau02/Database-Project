@@ -64,9 +64,12 @@ class AddMedication(ctk.CTkFrame):
         )
         dose = ctk.CTkEntry(self, placeholder_text="dose", width=200)
         form = ctk.CTkEntry(self, placeholder_text="form", width=200)
-        price = ctk.CTkEntry(self, placeholder_text="price", width=200)
+        price = ctk.CTkEntry(self, placeholder_text="price (price cannot be updated)", width=200)
         submit = ctk.CTkButton(
             self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), expiration.get(), dose.get(), form.get(), float(price.get())),
+        )
+        update = ctk.CTkButton(
+            self, text="Update", command=lambda: updateMedicationInDatabase(name.get(), code.get(), expiration.get(), dose.get(), form.get()),
         )
         back = ctk.CTkButton(
             self, text="Back", command=lambda: self.goto_supply_opts()
@@ -74,7 +77,7 @@ class AddMedication(ctk.CTkFrame):
 
         # order the elements
         self.entries = [name, code, expiration, dose, form, price]
-        self.elements = [label] + self.entries + [submit, back]
+        self.elements = [label] + self.entries + [submit, update, back]
 
         # render all elements 
         for element in self.elements:
@@ -128,6 +131,42 @@ class SearchMedication(ctk.CTkFrame):
             self.results_box.configure(state=ctk.DISABLED)    
         except Exception as e:
             print(e)
+
+    def goto_supply_opts(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+
+        self.controller.show_frame("SupplyOpts")
+
+    def __init__(self, parent, controller):
+
+        ctk.CTkFrame.__init__(self, parent)
+        self.controller = controller
+
+        # elements to be rendered
+        label = ctk.CTkLabel(self, text="Enter medication information", width=200)
+        name = ctk.CTkEntry(self, placeholder_text="name", width=200)
+        code = ctk.CTkEntry(self, placeholder_text="code", width=200)
+        expiration = ctk.CTkEntry(
+            self, placeholder_text="Expiration: MM-DD-YYYY", width=200
+        )
+        dose = ctk.CTkEntry(self, placeholder_text="dose", width=200)
+        form = ctk.CTkEntry(self, placeholder_text="form", width=200)
+        price = ctk.CTkEntry(self, placeholder_text="price", width=200)
+        submit = ctk.CTkButton(
+            self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), expiration.get(), dose.get(), form.get(), float(price.get())),
+        )
+        back = ctk.CTkButton(
+            self, text="Back", command=lambda: self.goto_supply_opts()
+        )        
+
+        # order the elements
+        self.entries = [name, code, expiration, dose, form, price]
+        self.elements = [label] + self.entries + [submit, back]
+
+        # render all elements 
+        for element in self.elements:
+            element.pack()
 
     def goto_supply_opts(self):
         for entry in self.entries:
@@ -208,10 +247,10 @@ class SearchEquipment(ctk.CTkFrame):
 
         try:
             cursor.execute(querySql, queryVal)
-            medications = cursor.fetchall()
+            equipment = cursor.fetchall()
             label_text = "There are {} equipment pieces matching name: {}, code: {}\n".format(len(medications), name, code)
             for piece in equipment:
-                label_text += "Name: {}\nCode: {}\nLifetime: {}\nHours: {}\nType: {}".format(medication[0], medication[1], medication[2], medication[3], medication[4])
+                label_text += "Name: {}\nCode: {}\nLifetime: {}\nHours: {}\nType: {}".format(equipment[0], equipment[1], equipment[2], equipment[3], equipment[4])
             self.results_box.configure(state=ctk.NORMAL)
             self.results_box.delete("0.0", "end")
             self.results_box.insert("0.0", label_text)
@@ -307,6 +346,17 @@ def addMedicationToDatabase(name: str, code: str, expiration: str, dose: str, fo
     medicationVal = (name, code, dose, form)
     try:
         cursor.execute(medicationSql, medicationVal)
+        db.commit()
+    except Exception as e:
+        print(e)
+
+def updateMedicationInDatabase(name: str, code: str, expiration: str, dose: str, form: str):
+
+    medicationSql = "UPDATE medication, supplies SET Med_Name='{}', Expiration=STR_TO_DATE('{}','%m-%d-%Y'), Dose='{}', Form='{}' WHERE medication.Supply_code='{}' AND supplies.Supply_code='{}'"
+    medicationVal = (name, expiration, dose, form, code, code)
+
+    try:
+        cursor.execute(medicationSql.format(*medicationVal))
         db.commit()
     except Exception as e:
         print(e)
