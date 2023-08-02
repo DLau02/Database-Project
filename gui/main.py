@@ -1,6 +1,7 @@
 import sys
 import customtkinter as ctk
 from PatientOpts import *
+from DoctorOpts import *
 from SupplyOpts import (
     SupplyOpts,
     AddMedication,
@@ -42,6 +43,11 @@ class App(ctk.CTk):
             ViewInvoice,
             AddInvoice,
             UpdateInvoice
+            DoctorOpts,
+            DoctorBySSN,
+            DoctorByName,
+            AddDoctor,
+            ChangeDoctor,
         ):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
@@ -71,6 +77,11 @@ class StartPage(ctk.CTkFrame):
             text="Supplies",
             command=lambda: controller.show_frame("SupplyOpts"),
         )
+        Doctor = ctk.CTkButton(
+            self,
+            text="Doctor",
+            command=lambda: controller.show_frame("DoctorOpts"),
+        )
         Invoice = ctk.CTkButton(
             self,
             text="Invoices",
@@ -81,6 +92,7 @@ class StartPage(ctk.CTkFrame):
         label.pack(side="top", fill="x", pady=10)
         patient_by_name.pack()
         SupplyOpts.pack()
+        Doctor.pack()
         Invoice.pack()
         exit_btn.pack()
 
