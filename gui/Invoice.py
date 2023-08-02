@@ -42,7 +42,7 @@ class ViewInvoice(ctk.CTkFrame):
         ctk.CTkFrame.__init__(self, parent)
         self.controller = controller
         label = ctk.CTkLabel(self, text = "View Invoice", width = 200)
-        self.results_box=ctk.CTkTextbox(self, width=400)
+        self.results_box=ctk.CTkTextbox(self, width=500)
         Invoice_ID = ctk.CTkEntry(self, placeholder_text = "Invoice ID", width = 200)
         PID = ctk.CTkEntry(self, placeholder_text = "PID", width = 200)
         Provider = ctk.CTkEntry(self, placeholder_text = "Provider", width = 200)
@@ -104,12 +104,18 @@ class ViewInvoice(ctk.CTkFrame):
             label_text = "PID: {}\nInvoice ID: {}\nProvider: {}\nDeductible: {}\nCo pay: {}\n\n".format(
                 result[0][0], result[0][1], result[0][2], result[0][3], result[0][4]
             )
-            medication_text += "MEDICTION:\n\nName: {}\t| Code: {}\t| Expiration: {}\t| Dose: {}\t| Form: {}\n\n".format(
-                medication[0][0], medication[0][1], medication[0][2], medication[0][3], medication[0][4]
-            )
-            equipment_text += "EQUIPMENT:\n\nName: {}\t| Code: {}\t| Lifetime: {}\t| Hours: {}\t| Type: {}".format(
-                equipment[0][0], equipment[0][1], equipment[0][2], equipment[0][3], equipment[0][4]
-            )
+
+            medication_text += "MEDICTION:\n\n"
+            for med in medication:
+                medication_text += "Name: {}\t| Code: {}\t| Expiration: {}\t| Dose: {}\t| Form: {}\n\n".format(
+                    med[0], med[1], med[2], med[3], med[4]
+                )
+            
+            equipment_text += "EQUIPMENT:\n\n"
+            for piece in equipment:
+                equipment_text += "Name: {}\t| Code: {}\t| Lifetime: {}\t| Hours: {}\t| Type: {}\n\n".format(
+                    piece[0], piece[1], piece[2], piece[3], piece[4]
+                )
             if medication_text == "MEDICTION:\n\n":
                 label_text = label_text + equipment_text
             elif equipment_text == "EQUIPMENT:\n\n":
