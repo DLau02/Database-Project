@@ -137,42 +137,6 @@ class SearchMedication(ctk.CTkFrame):
             entry.delete(0, ctk.END)
 
         self.controller.show_frame("SupplyOpts")
-
-    def __init__(self, parent, controller):
-
-        ctk.CTkFrame.__init__(self, parent)
-        self.controller = controller
-
-        # elements to be rendered
-        label = ctk.CTkLabel(self, text="Enter medication information", width=200)
-        name = ctk.CTkEntry(self, placeholder_text="name", width=200)
-        code = ctk.CTkEntry(self, placeholder_text="code", width=200)
-        expiration = ctk.CTkEntry(
-            self, placeholder_text="Expiration: MM-DD-YYYY", width=200
-        )
-        dose = ctk.CTkEntry(self, placeholder_text="dose", width=200)
-        form = ctk.CTkEntry(self, placeholder_text="form", width=200)
-        price = ctk.CTkEntry(self, placeholder_text="price", width=200)
-        submit = ctk.CTkButton(
-            self, text="Submit", command=lambda: addMedicationToDatabase(name.get(), code.get(), expiration.get(), dose.get(), form.get(), float(price.get())),
-        )
-        back = ctk.CTkButton(
-            self, text="Back", command=lambda: self.goto_supply_opts()
-        )        
-
-        # order the elements
-        self.entries = [name, code, expiration, dose, form, price]
-        self.elements = [label] + self.entries + [submit, back]
-
-        # render all elements 
-        for element in self.elements:
-            element.pack()
-
-    def goto_supply_opts(self):
-        for entry in self.entries:
-            entry.delete(0, ctk.END)
-
-        self.controller.show_frame("SupplyOpts")
         
 class AddEquipment(ctk.CTkFrame):
     def __init__(self, parent, controller):
