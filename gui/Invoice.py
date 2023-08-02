@@ -19,6 +19,12 @@ class Invoice(ctk.CTkFrame):
             command = lambda: controller.show_frame("AddInvoice"),
         )
 
+        Update_Invoice = ctk.CTkButton(
+            self,
+            text = "Update Invoice",
+            command = lambda: controller.show_frame("UpdateInvoice"),
+        )
+
         back = ctk.CTkButton(
             self,
             text="Back",
@@ -28,6 +34,7 @@ class Invoice(ctk.CTkFrame):
         label.pack(side = "top", fill = "x", pady=10)
         View_Invoice.pack()
         Add_Invoice.pack()
+        Update_Invoice.pack()
         back.pack()
 
 class ViewInvoice(ctk.CTkFrame):
@@ -173,6 +180,70 @@ class AddInvoice(ctk.CTkFrame):
             mycursor.execute(query1)
             mycursor.execute(query2, queryVal2)
             mycursor.execute(query3, queryVal3)
+            db.commit()  # Commit the transaction to save the changes in the database
+            self.results_box.configure(state=ctk.NORMAL)
+            self.results_box.delete("0.0", "end")
+            label_text = "Information added successfully!"
+            self.results_box.insert("0.0", label_text)
+            self.results_box.configure(state=ctk.DISABLED)
+        except Exception as e:
+            db.rollback()  # Rollback the transaction in case of an error
+            self.results_box.configure(state=ctk.NORMAL)
+            self.results_box.delete("0.0", "end")
+            label_text = "Error occurred: {}".format(str(e))
+            self.results_box.insert("0.0", label_text)
+            self.results_box.configure(state=ctk.DISABLED)
+
+class UpdateInvoice(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        ctk.CTkFrame.__init__(self, parent)
+        self.controller = controller
+        label = ctk.CTkLabel(self, text = "Update Invoice", width = 200)
+        self.results_box = ctk.CTkTextbox(self, width=400)
+        Invoice_ID = ctk.CTkEntry(self, placeholder_text = "Invoice ID", width = 200)
+        PID = ctk.CTkEntry(self, placeholder_text = "New PID", width = 200)
+
+        update = ctk.CTkButton(
+                self,
+                text="Update",
+                command = lambda: self.update(PID.get(), Invoice_ID.get()),
+            )
+        
+        back = ctk.CTkButton(
+            self,
+            text="Go back", 
+            command = lambda: self.goto_Invoice(),
+        )
+        
+        self.entries = [PID, Invoice_ID]
+
+        elements = [
+            label,
+            Invoice_ID,
+            PID,
+            update,
+            self.results_box,
+            back,
+        ]
+        for element in elements:
+            element.pack()
+    
+    def goto_Invoice(self):
+        for entry in self.entries:
+            entry.delete(0, ctk.END)
+        
+        self.results_box.configure(state=ctk.NORMAL)
+        self.results_box.delete("0.0", "end")
+        self.results_box.configure(state=ctk.DISABLED)
+        self.controller.show_frame("Invoice")
+        
+    def update(self, PID, Invoice_ID):
+        query = "UPDATE invoice_contains SET PID = %s WHERE Invoice_ID = %s;"
+        queryVal = (PID, Invoice_ID)
+        mycursor = db.cursor()
+
+        try:
+            mycursor.execute(query, queryVal)
             db.commit()  # Commit the transaction to save the changes in the database
             self.results_box.configure(state=ctk.NORMAL)
             self.results_box.delete("0.0", "end")
