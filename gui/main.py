@@ -11,6 +11,7 @@ from SupplyOpts import (
     SuppliesforProcedure,
 )
 from Invoice import Invoice, ViewInvoice, AddInvoice, UpdateInvoice
+from RoomOpts import RoomOpts, Room_Status, Assign_Room
 
 ctk.set_appearance_mode("system")
 ctk.set_default_color_theme("dark-blue")
@@ -48,6 +49,9 @@ class App(ctk.CTk):
             DoctorByName,
             AddDoctor,
             ChangeDoctor,
+            RoomOpts, 
+            Room_Status,
+            Assign_Room,
         ):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
@@ -87,6 +91,11 @@ class StartPage(ctk.CTkFrame):
             text="Invoices",
             command=lambda: controller.show_frame("Invoice"),
         )
+        Room_Status = ctk.CTkButton(
+            self,
+            text="Room",
+            command=lambda: controller.show_frame("RoomOpts"),
+        )
         exit_btn = ctk.CTkButton(self, text="Exit", command=lambda: sys.exit(0))
 
         label.pack(side="top", fill="x", pady=10)
@@ -94,6 +103,7 @@ class StartPage(ctk.CTkFrame):
         SupplyOpts.pack()
         Doctor.pack()
         Invoice.pack()
+        Room_Status.pack()
         exit_btn.pack()
 
 
