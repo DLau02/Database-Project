@@ -43,7 +43,7 @@ class App(ctk.CTk):
             Invoice,
             ViewInvoice,
             AddInvoice,
-            UpdateInvoice
+            UpdateInvoice,
             DoctorOpts,
             DoctorBySSN,
             DoctorByName,
