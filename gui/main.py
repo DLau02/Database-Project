@@ -9,7 +9,7 @@ from SupplyOpts import (
     SearchEquipment,
     SuppliesforProcedure,
 )
-from Invoice import Invoice, ViewInvoice, AddInvoice
+from Invoice import Invoice, ViewInvoice, AddInvoice, UpdateInvoice
 
 ctk.set_appearance_mode("system")
 ctk.set_default_color_theme("dark-blue")
@@ -40,7 +40,8 @@ class App(ctk.CTk):
             SuppliesforProcedure,
             Invoice,
             ViewInvoice,
-            AddInvoice
+            AddInvoice,
+            UpdateInvoice
         ):
             page_name = F.__name__
             frame = F(parent=container, controller=self)
