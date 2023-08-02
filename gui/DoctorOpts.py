@@ -76,11 +76,10 @@ class DoctorByName(ctk.CTkFrame):
         self.results_box.pack()
 
     def search(self):
-        query = "SELECT first_name, last_name, d.ssn FROM doctor AS d JOIN person AS pe ON d.ssn = pe.ssn WHERE first_name='{}' AND last_name='{}'".format(
-            self.first.get(), self.last.get()
-        )
+        query = "SELECT first_name, last_name, d.ssn FROM doctor AS d JOIN person AS pe ON d.ssn = pe.ssn WHERE first_name=%s AND last_name=%s"
+        queryVal = (self.first.get(), self.last.get())
         mycursor = db.cursor()
-        mycursor.execute(query)
+        mycursor.execute(query, queryVal)
         doctors = mycursor.fetchall()
         labelText = ""
         if len(doctors) == 0:
@@ -339,11 +338,10 @@ class DoctorBySSN(ctk.CTkFrame):
         self.results_box.pack()
 
     def search(self):
-        query = "SELECT first_name, last_name, d.ssn, Specialty FROM specialty_salary AS s, doctor AS d JOIN person AS pe ON d.ssn = pe.ssn WHERE d.ssn={}".format(
-            self.ssn.get()
-        )
+        query = "SELECT first_name, last_name, d.ssn, Specialty FROM specialty_salary AS s, doctor AS d JOIN person AS pe ON d.ssn = pe.ssn WHERE d.ssn=%s"
+        queryVal = (self.ssn.get(), )
         mycursor = db.cursor()
-        mycursor.execute(query)
+        mycursor.execute(query, queryVal)
         doctors = mycursor.fetchall()
         labelText = ""
         if len(doctors) == 0:
