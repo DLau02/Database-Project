@@ -6,7 +6,7 @@
 - [Kayla Baker](https://github.com/kaylambaker)
 - [Daniel Lau](https://github.com/DLau02)
 - [Yuya Cho](https://github.com/Yuya216)
-- Sid Goteti
+- [Sid Goteti](https://github.com/Gotetisid)
 
 
 ## Installation
