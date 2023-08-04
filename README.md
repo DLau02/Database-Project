@@ -16,6 +16,10 @@ This project uses python for the GUI and MySql for the database.
 To download and install python, visit:
 https://www.python.org/downloads/
 
+To download and install Customtkinter, follow along the instructions:
+- Open command prompt
+- run the command: pip install customtkinter
+
 To download and install MySql, visti:
 https://dev.mysql.com/downloads/installer/
 
