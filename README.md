@@ -16,9 +16,7 @@ This project uses python for the GUI and MySql for the database.
 To download and install python, visit:
 https://www.python.org/downloads/
 
-To download and install Customtkinter, follow along the instructions:
-- Open command prompt
-- run the command: pip install customtkinter
+To download and install pip visit: https://pip.pypa.io/en/stable/installation/
 
 To download and install MySql, visti:
 https://dev.mysql.com/downloads/installer/
@@ -27,6 +25,12 @@ Next, download the project with git or extract the zip file to the desired direc
 
 ```
 https://github.com/DLau02/Database-Project.git
+```
+
+To install the dependencies customtkinter and mysql-connector-python, cd into the Database-Project directory and run the following command
+
+```
+pip install -r gui/pip-packages.txt
 ```
 
 
